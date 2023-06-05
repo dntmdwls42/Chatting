@@ -1,5 +1,7 @@
+import javax.xml.crypto.Data;
 import java.net.Socket;
 import java.util.Scanner;
+import java.io.DataOutputStream;
 
 public class ChatClient {
     public static void main(String[] args) {
@@ -11,6 +13,10 @@ public class ChatClient {
             System.out.println("사용 할 이름(ID)를 입력해 주세요 >>> ");
             Scanner _Scanner = new Scanner(System.in);
             String name = _Scanner.next();
+
+            DataOutputStream _DataOutputStream = new DataOutputStream(_Socket.getOutputStream());
+            _DataOutputStream.writeUTF(name);
+            _DataOutputStream.flush();
 
             Sender sender = new Sender(_Socket, name);
             Receiver receiver = new Receiver(_Socket);
