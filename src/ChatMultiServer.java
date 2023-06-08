@@ -51,8 +51,18 @@ public class ChatMultiServer {
             String name = "";
             try {
                 System.out.print("서버의 소켓 : " + _Socket);
-                name = _DataInputStream.readUTF();
-                System.out.println(name);
+//                name = _DataInputStream.readUTF();
+//                System.out.println(name);
+                while ((name = _DataInputStream.readUTF()) != null) {
+                    if (clientMap.containsKey(name)){
+                        _DataOutputStream.writeUTF("!errCode404");
+                    } else {
+                        System.out.println(name);
+                        _DataOutputStream.writeUTF("");
+                        break;
+                    }
+                }
+
                 clientMap.put(name, _DataOutputStream);
                 while (_DataInputStream != null) {
                     String msg;
