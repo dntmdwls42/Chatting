@@ -76,7 +76,7 @@ public class ChatMultiServer {
                             _DataOutputStream.writeUTF(IsShowUserList(name));
                         }
                     } else {
-                        IsAllSendMessage(msg);
+                        IsAllSendMessage(msg, name);
                     }
                 }
             } catch (Exception e) {
@@ -86,6 +86,24 @@ public class ChatMultiServer {
                 IsAllSendMessage("# [ " + name + " ] 님이 퇴장하셨습니다.");
             }
         }
+
+        public boolean IsAllSendMessage(String msg, String name) {
+            Iterator it = clientMap.keySet().iterator();
+
+            while (it.hasNext()) {
+                try {
+                    Object _Object = it.next();
+                    DataOutputStream it_out = (DataOutputStream) clientMap.get(_Object);
+                    if (!_Object.toString().equals(name)) {
+                        it_out.writeUTF(msg);
+                    }
+                } catch (IOException e) {
+                    System.out.println("All Send Mag Error : " + e);
+                }
+            }
+            return true;
+        }
+
         public boolean IsAllSendMessage(String msg) {
             Iterator it = clientMap.keySet().iterator();
 
