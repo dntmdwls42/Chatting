@@ -71,7 +71,13 @@ public class ChatMultiServer {
                     String msg;
                     msg = _DataInputStream.readUTF();
 
-                    IsAllSendMessage(msg);
+                    if (msg.replaceAll(name + " >>> ", "").startsWith("@")) {
+                        if (msg.replaceAll(name + " >>> ", "").trim().equals("@접속자")){
+                            _DataOutputStream.writeUTF(IsShowUserList(name));
+                        }
+                    } else {
+                        IsAllSendMessage(msg);
+                    }
                 }
             } catch (Exception e) {
                 System.out.println("ServerReceiver RunTime Error : " + e + "[" + name + "]");
@@ -92,6 +98,26 @@ public class ChatMultiServer {
                 }
             }
             return true;
+        }
+
+        public String IsShowUserList(String name) {
+            StringBuilder _StringBuilder = new StringBuilder("==접속자목록==\r\n");
+
+            Iterator it = clientMap.keySet().iterator();
+
+            while (it.hasNext()){
+                try {
+                    String key = (String) it.next();
+                    if (key.equals(name)){
+                        key += " (*) ";
+                    }
+                    _StringBuilder.append(key+"\r\n");
+                }catch (Exception e){
+                    System.out.println("예외 : "+e);
+                }
+            }
+            _StringBuilder.append("=="+clientMap.size()+"명 접속중==\r\n");
+            return _StringBuilder.toString();
         }
     }
 }
