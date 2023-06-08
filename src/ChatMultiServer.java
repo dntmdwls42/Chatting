@@ -64,6 +64,9 @@ public class ChatMultiServer {
                 }
 
                 clientMap.put(name, _DataOutputStream);
+
+                IsAllSendMessage("# [ " + name + " ] 님이 입장하셨습니다.");
+
                 while (_DataInputStream != null) {
                     String msg;
                     msg = _DataInputStream.readUTF();
@@ -72,6 +75,9 @@ public class ChatMultiServer {
                 }
             } catch (Exception e) {
                 System.out.println("ServerReceiver RunTime Error : " + e + "[" + name + "]");
+            } finally {
+                clientMap.remove(name);
+                IsAllSendMessage("# [ " + name + " ] 님이 퇴장하셨습니다.");
             }
         }
         public boolean IsAllSendMessage(String msg) {

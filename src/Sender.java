@@ -19,7 +19,17 @@ public class Sender extends Thread {
         Scanner _Scanner = new Scanner(System.in);
         while (_DataOutputStream != null) {
             try {
-                _DataOutputStream.writeUTF(name+" >>> " +_Scanner.nextLine());
+
+                String msg = _Scanner.nextLine();
+
+                if (msg.trim().equals("@quit") || msg.trim().equals("@종료")){
+                    System.out.println("# Server와 연결이 종료 되었습니다.");
+                    System.out.println("# 프로그램을 종료 합니다.");
+                    System.exit(0);
+                } else {
+                    _DataOutputStream.writeUTF(name+" >>> "+msg);
+                }
+//                _DataOutputStream.writeUTF(name+" >>> " +_Scanner.nextLine());
             } catch (Exception e) {
                 System.out.println("Sender RunTime Error : " + e);
                 break;
