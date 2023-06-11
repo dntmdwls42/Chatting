@@ -74,6 +74,21 @@ public class ChatMultiServer {
                     if (msg.replaceAll(name + " >>> ", "").startsWith("@")) {
                         if (msg.replaceAll(name + " >>> ", "").trim().equals("@접속자")){
                             _DataOutputStream.writeUTF(IsShowUserList(name));
+                        } else if (msg.replaceAll(name + " >>> ", "").trim().startsWith("@귓속말")){
+                            String[] msgTemp = msg.replaceAll(name + " >>> ", "").trim().split(" ",3);
+                            if (msgTemp==null||msgTemp.length<3){
+                                _DataOutputStream.writeUTF("# 귓속말 사용법이 잘못되었습니다.\r\n# @귓속말 [상대방이름] [보낼메시지].");
+                            } else {
+                                String toName = msgTemp[1];
+                                String toMsg = msgTemp[2];
+                                if (clientMap.containsKey(toName)){
+                                    IsSendToMsg(name,toName,toMsg);
+                                }else {
+                                    _DataOutputStream.writeUTF("# 해당 유저가 존재하지 않습니다.");
+                                }
+                            }
+                        }else {
+                            _DataOutputStream.writeUTF("# 잘못된 명령어 입니다.");
                         }
                     } else {
                         IsAllSendMessage(msg, name);
@@ -86,6 +101,8 @@ public class ChatMultiServer {
                 IsAllSendMessage("# [ " + name + " ] 님이 퇴장하셨습니다.");
             }
         }
+
+
 
         public boolean IsAllSendMessage(String msg, String name) {
             Iterator it = clientMap.keySet().iterator();
@@ -136,6 +153,15 @@ public class ChatMultiServer {
             }
             _StringBuilder.append("=="+clientMap.size()+"명 접속중==\r\n");
             return _StringBuilder.toString();
+        }
+
+        public void IsSendToMsg(String fromName, String toName, String msg){
+            try {
+                clientMap.get(toName).writeUTF("## 귓 : from["+fromName+"] >>> "+msg);
+                clientMap.get(fromName).writeUTF("## 귓 : from["+toName+"] >>> "+msg);
+            }catch (Exception e){
+                System.out.println("예외 : "+e);
+            }
         }
     }
 }
